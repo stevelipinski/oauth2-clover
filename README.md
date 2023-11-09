@@ -1,10 +1,10 @@
 # Clover Provider for OAuth 2.0 Client
 
-[![Build Status](https://img.shields.io/travis/wheniwork/oauth2-clover.svg)](https://travis-ci.org/wheniwork/oauth2-clover)
-[![Code Coverage](https://img.shields.io/coveralls/wheniwork/oauth2-clover.svg)](https://coveralls.io/r/wheniwork/oauth2-clover)
-[![Code Quality](https://img.shields.io/scrutinizer/g/wheniwork/oauth2-clover.svg)](https://scrutinizer-ci.com/g/wheniwork/oauth2-clover/)
-[![License](https://img.shields.io/packagist/l/wheniwork/oauth2-clover.svg)](https://github.com/wheniwork/oauth2-clover/blob/master/LICENSE)
-[![Latest Stable Version](https://img.shields.io/packagist/v/wheniwork/oauth2-clover.svg)](https://packagist.org/packages/wheniwork/oauth2-clover)
+[![Source Code](https://img.shields.io/badge/source-stevelipinski/oauth2--clover-blue.svg?style=flat-square)](https://github.com/stevelipinski/oauth2-clover)
+[![Latest Version](https://img.shields.io/github/release/stevelipinski/oauth2-clover.svg?style=flat-square)](https://github.com/stevelipinski/oauth2-clover/releases)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://github.com/stevelipinski/oauth2-clover/blob/master/LICENSE)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/stevelipinski/oauth2-clover/continuous-integration.yml?label=CI&logo=github&style=flat-square)](https://github.com/stevelipinski/oauth2-clover/actions?query=workflow%3ACI)
+[![Codecov Code Coverage](https://img.shields.io/codecov/c/gh/stevelipinski/oauth2-clover?label=codecov&logo=codecov&style=flat-square)](https://codecov.io/gh/stevelipinski/oauth2-clover)
 
 This package provides [Clover OAuth 2.0](https://demo1.dev.clover.com/docs/oauth) support for the PHP League's [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client).
 
@@ -13,17 +13,17 @@ This package provides [Clover OAuth 2.0](https://demo1.dev.clover.com/docs/oauth
 To install, use composer:
 
 ```
-composer require wheniwork/oauth2-clover
+composer require stevelipinski/oauth2-clover
 ```
 
 ## Usage
 
-Usage is the same as The League's OAuth client, using `Wheniwork\OAuth2\Client\Provider\Clover` as the provider.
+Usage is the same as The League's OAuth client, using `Stevelipinski\OAuth2\Client\Provider\Clover` as the provider.
 
 ### Authorization Code Flow
 
 ```php
-$provider = new Wheniwork\OAuth2\Client\Provider\Clover([
+$provider = new Stevelipinski\OAuth2\Client\Provider\Clover([
     'clientId'     => '{clover-client-id}',
     'clientSecret' => '{clover-client-secret}',
     'marketPrefix' => '{clover-market-prefix}',

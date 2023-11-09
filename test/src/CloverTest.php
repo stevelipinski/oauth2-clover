@@ -1,13 +1,13 @@
 <?php
 
-namespace Wheniwork\OAuth2\Client\Test\Provider;
+namespace Stevelipinski\OAuth2\Client\Test\Provider;
 
 use League\OAuth2\Client\Token\AccessToken;
-use Wheniwork\OAuth2\Client\Provider\Clover;
+use Stevelipinski\OAuth2\Client\Provider\Clover;
+use Mockery;
+use PHPUnit\Framework\TestCase;
 
-use Mockery as m;
-
-class CloverTest extends \PHPUnit_Framework_TestCase
+class CloverTest extends TestCase
 {
     protected $provider;
 
@@ -23,7 +23,7 @@ class CloverTest extends \PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
-        m::close();
+        Mockery::close();
         parent::tearDown();
     }
 
@@ -62,14 +62,14 @@ class CloverTest extends \PHPUnit_Framework_TestCase
     {
         $response = json_decode('{"id": "ABCDE", "name": "mock_name", "email": "mock_email", "role": "EMPLOYEE"}', true);
 
-        $provider = m::mock('Wheniwork\OAuth2\Client\Provider\Clover[fetchResourceOwnerDetails]')
+        $provider = Mockery::mock('Stevelipinski\OAuth2\Client\Provider\Clover[fetchResourceOwnerDetails]')
             ->shouldAllowMockingProtectedMethods();
 
         $provider->shouldReceive('fetchResourceOwnerDetails')
             ->times(1)
             ->andReturn($response);
 
-        $token = m::mock('League\OAuth2\Client\Token\AccessToken');
+        $token = Mockery::mock('League\OAuth2\Client\Token\AccessToken');
         $user = $provider->getResourceOwner($token);
 
         $this->assertInstanceOf('League\OAuth2\Client\Provider\ResourceOwnerInterface', $user);

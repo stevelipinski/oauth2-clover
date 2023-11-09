@@ -1,17 +1,29 @@
 {
-    "name": "wheniwork/oauth2-clover",
+    "name": "stevelipinski/oauth2-clover",
     "description": "Clover OAuth 2.0 Client Provider for The PHP League OAuth2-Client",
     "license": "MIT",
+    "config": {
+        "sort-packages": true
+    },
+    "require": {
+        "league/oauth2-client": "2.4.1"
+    },
+    "require-dev": {
+        "mockery/mockery": "^1.3.5",
+        "php-parallel-lint/php-parallel-lint": "^1.3.1",
+        "phpunit/phpunit": "^5.7",
+        "squizlabs/php_codesniffer": "^2.3"
+    },
     "authors": [
         {
-            "name": "Woody Gilk",
-            "email": "woody.gilk@gmail.com",
-            "homepage": "https://github.com/shadowhand"
+            "name": "Steve Lipinski",
+            "homepage": "https://github.com/stevelipinski",
+            "role": "Developer"
         },
         {
-            "name": "Daniel Olfelt",
-            "email": "dolfelt@gmail.com",
-            "homepage": "https://github.com/dolfelt"
+            "name": "Woody Gilk",
+            "homepage": "https://github.com/shadowhand",
+            "role": "Contributor"
         }
     ],
     "keywords": [
@@ -19,24 +31,21 @@
         "oauth2",
         "client",
         "authorization",
-        "authorisation",
+        "authentication",
+        "idp",
+        "identity",
+        "sso",
+        "single sign on",
         "clover"
     ],
-    "require": {
-        "league/oauth2-client": "^1.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^4|^5",
-        "mockery/mockery": "^0.9"
-    },
     "autoload": {
         "psr-4": {
-            "Wheniwork\\OAuth2\\Client\\Provider\\": "src/"
+            "Stevelipinski\\OAuth2\\Client\\Provider\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Wheniwork\\OAuth2\\Client\\Test\\Provider\\": "tests/src/"
+            "Stevelipinski\\OAuth2\\Client\\Test\\Provider\\": "tests/src/"
         }
     }
 }
