@@ -16,8 +16,7 @@ class CloverTest extends TestCase
         $this->provider = new Clover([
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
-            'marketPrefix' => 'mock_prefix',
-            'redirectUri' => 'none',
+            'redirectUri' => 'none'
         ]);
     }
 
@@ -45,8 +44,9 @@ class CloverTest extends TestCase
         $url = $this->provider->getBaseAccessTokenUrl([]);
         $uri = parse_url($url);
 
-        $this->assertEquals('/oauth/token', $uri['path']);
-        $this->assertContains('.mock_prefix', $uri['host']);
+        $this->assertEquals('/oauth/v2/token', $uri['path']);
+        $this->assertContains('clover.com', $uri['host']);
+        $this->assertContains('sandbox', $uri['host']);
     }
 
     public function testResourceOwnerDetailsUrl()

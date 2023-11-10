@@ -11,20 +11,22 @@ class Clover extends AbstractProvider
 {
     use BearerAuthorizationTrait;
 
-    /**
-     * @var string
-     */
-    protected $marketPrefix;
+    /*
+    @var bool    
+    */
+    protected $sandbox = true;
+
+    /*
+    @var string    
+    */
+    protected $apiUrl;
 
     public function __construct(array $options = [], array $collaborators = [])
     {
-        if (!empty($options['marketPrefix'])) {
-            // Ensure that the market domain prefix always starts with a dot
-            if ($options['marketPrefix'][0] !== '.') {
-                $options['marketPrefix'] = '.' . $options['marketPrefix'];
-            }
+        if (isset($options['useSandbox'])) {
+            $this->sandbox = $options['useSandbox'];
         }
-
+        $this->apiUrl = $this->sandbox ? 'https://sandbox.dev.clover.com' : 'https://api.clover.com';
         parent::__construct($options, $collaborators);
     }
 
@@ -36,27 +38,17 @@ class Clover extends AbstractProvider
      */
     protected function getApiUrl($path)
     {
-        return sprintf(
-            'https://api%s.clover.com/v3/%s',
-            $this->marketPrefix,
-            $path
-        );
+        return $this->apiUrl . '/' . $path;
     }
 
     public function getBaseAuthorizationUrl()
     {
-        return sprintf(
-            'https://www%s.clover.com/oauth/authorize',
-            $this->marketPrefix
-        );
+        return $this->getapiUrl('oauth/v2/authorize');
     }
 
     public function getBaseAccessTokenUrl(array $params)
     {
-        return sprintf(
-            'https://www%s.clover.com/oauth/token',
-            $this->marketPrefix
-        );
+        return $this->getapiUrl('oauth/v2/token');
     }
 
     public function getResourceOwnerDetailsUrl(AccessToken $token)
