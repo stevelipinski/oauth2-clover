@@ -3,6 +3,7 @@
 namespace Stevelipinski\OAuth2\Client\Provider;
 
 use League\OAuth2\Client\Provider\AbstractProvider;
+use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
 use Psr\Http\Message\ResponseInterface;
@@ -43,12 +44,12 @@ class Clover extends AbstractProvider
 
     public function getBaseAuthorizationUrl()
     {
-        return $this->getapiUrl('oauth/v2/authorize');
+        return $this->getApiUrl('oauth/v2/authorize');
     }
 
     public function getBaseAccessTokenUrl(array $params)
     {
-        return $this->getapiUrl('oauth/v2/token');
+        return $this->getApiUrl('oauth/v2/token');
     }
 
     public function getResourceOwnerDetailsUrl(AccessToken $token)
@@ -56,9 +57,21 @@ class Clover extends AbstractProvider
         return $this->getApiUrl('merchants/current/employees/current');
     }
 
-    protected function getAccessTokenMethod()
+    protected function getAccessTokenOptions(array $params)
     {
-        return static::METHOD_GET;
+        $options = ['headers' => ['content-type' => 'application/json']];
+
+        if ($this->getAccessTokenMethod() === self::METHOD_POST) {
+            $options['body'] = $this->getAccessTokenBody($params);
+        }
+
+        return $options;
+    }
+
+    // Clover uses JSON body instead of urlencoded form
+    protected function getAccessTokenBody(array $params)
+    {
+        return json_encode($params);
     }
 
     protected function getDefaultScopes()
@@ -69,6 +82,16 @@ class Clover extends AbstractProvider
     protected function checkResponse(ResponseInterface $response, $data)
     {
         // Clover does not seem to expose useful error information :(
+    }
+
+    // Clover sends access_token_expiration instead of expires. 
+    protected function createAccessToken(array $response, AbstractGrant $grant)
+    {
+        if(isset($response['access_token_expiration']) && !isset($response['expires']))
+        {
+            $response['expires'] = $response['access_token_expiration'];
+        }
+        return new AccessToken($response);
     }
 
     protected function createResourceOwner(array $response, AccessToken $token)
