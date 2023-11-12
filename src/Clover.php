@@ -3,6 +3,7 @@
 namespace Stevelipinski\OAuth2\Client\Provider;
 
 use League\OAuth2\Client\Provider\AbstractProvider;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
@@ -81,17 +82,20 @@ class Clover extends AbstractProvider
 
     protected function checkResponse(ResponseInterface $response, $data)
     {
-        // Clover does not seem to expose useful error information :(
+        if ($response->getStatusCode() >= 400)
+        {
+            $data = (is_array($data)) ? $data : json_decode($data, true);
+            throw new IdentityProviderException($data['error'], $response->getStatusCode(), $data);
+        }
     }
 
     // Clover sends access_token_expiration instead of expires. 
-    protected function createAccessToken(array $response, AbstractGrant $grant)
+    protected function prepareAccessTokenResponse(array $result)
     {
-        if(isset($response['access_token_expiration']) && !isset($response['expires']))
-        {
-            $response['expires'] = $response['access_token_expiration'];
+        if (isset($result['access_token_expiration']) && !isset($result['expires'])) {
+            $result['expires'] = $result['access_token_expiration'];
         }
-        return new AccessToken($response);
+        return parent::prepareAccessTokenResponse($result);
     }
 
     protected function createResourceOwner(array $response, AccessToken $token)
