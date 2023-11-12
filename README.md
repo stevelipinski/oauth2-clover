@@ -71,7 +71,3 @@ if (!isset($_GET['code'])) {
 
 }
 ```
-
-## Refreshing a Token
-
-Clover does not use refresh tokens.
