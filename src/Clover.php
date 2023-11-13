@@ -50,7 +50,11 @@ class Clover extends AbstractProvider
 
     public function getBaseAccessTokenUrl(array $params)
     {
-        return $this->getApiUrl('oauth/v2/token');
+        if (isset($params['grant_type']) && $params['grant_type'] = 'refresh_token') {
+            return $this->getApiUrl('oauth/v2/refresh');
+        } else {
+            return $this->getApiUrl('oauth/v2/token');
+        }
     }
 
     public function getResourceOwnerDetailsUrl(AccessToken $token)
