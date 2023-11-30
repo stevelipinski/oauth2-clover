@@ -89,7 +89,16 @@ class Clover extends AbstractProvider
         if ($response->getStatusCode() >= 400)
         {
             $data = (is_array($data)) ? $data : json_decode($data, true);
-            throw new IdentityProviderException($data['error'], $response->getStatusCode(), $data);
+            $error = 'unknown';
+            if (isset($data['error']))
+            {
+                $error = $data['error'];
+            }
+            if (isset($data['errors']))
+            {
+                $error = print_r($data['errors'], true);
+            }
+            throw new IdentityProviderException($error, $response->getStatusCode(), $data);
         }
     }
 
