@@ -62,7 +62,7 @@ class CloverTest extends TestCase
         $this->assertEquals('/oauth/v2/token', $uri['path']);
         $this->assertContains('sandbox.dev.clover.com', $uri['host']);
 
-        $prodUri = parse_url($this->productionProvider->getAuthorizationUrl());
+        $prodUri = parse_url($this->productionProvider->getBaseAccessTokenUrl([]));
         $this->assertEquals('/oauth/v2/token', $prodUri['path']);
         $this->assertContains('www.clover.com', $prodUri['host']);
     }
