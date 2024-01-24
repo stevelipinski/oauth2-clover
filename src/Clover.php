@@ -22,6 +22,7 @@ class Clover extends AbstractProvider
     @var string    
     */
     protected $apiUrl;
+    protected $authUrl;
 
     public function __construct(array $options = [], array $collaborators = [])
     {
@@ -29,31 +30,36 @@ class Clover extends AbstractProvider
             $this->sandbox = $options['useSandbox'];
         }
         $this->apiUrl = $this->sandbox ? 'https://sandbox.dev.clover.com' : 'https://api.clover.com';
+        $this->authUrl = $this->sandbox ? 'https://sandbox.dev.clover.com' : 'https://www.clover.com';
         parent::__construct($options, $collaborators);
     }
 
     /**
-     * Get a Clover API URL, depending on path.
+     * Get Clover API URLs, depending on path.
      *
      * @param  string $path
      * @return string
      */
-    protected function getApiUrl($path)
+    public function getApiUrl($path = '')
     {
         return $this->apiUrl . '/' . $path;
+    }
+    protected function getAuthUrl($path = '')
+    {
+        return $this->authUrl . '/' . $path;
     }
 
     public function getBaseAuthorizationUrl()
     {
-        return $this->getApiUrl('oauth/v2/authorize');
+        return $this->getAuthUrl('oauth/v2/authorize');
     }
 
     public function getBaseAccessTokenUrl(array $params)
     {
         if (isset($params['grant_type']) && $params['grant_type'] == 'refresh_token') {
-            return $this->getApiUrl('oauth/v2/refresh');
+            return $this->getAuthUrl('oauth/v2/refresh');
         } else {
-            return $this->getApiUrl('oauth/v2/token');
+            return $this->getAuthUrl('oauth/v2/token');
         }
     }
 
@@ -89,16 +95,7 @@ class Clover extends AbstractProvider
         if ($response->getStatusCode() >= 400)
         {
             $data = (is_array($data)) ? $data : json_decode($data, true);
-            $error = 'unknown';
-            if (isset($data['error']))
-            {
-                $error = $data['error'];
-            }
-            if (isset($data['errors']))
-            {
-                $error = print_r($data['errors'], true);
-            }
-            throw new IdentityProviderException($error, $response->getStatusCode(), $data);
+            throw new IdentityProviderException($data['error'], $response->getStatusCode(), $data);
         }
     }
 
