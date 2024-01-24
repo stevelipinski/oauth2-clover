@@ -9,11 +9,19 @@ use PHPUnit\Framework\TestCase;
 
 class CloverTest extends TestCase
 {
-    protected $provider;
+    protected $sandboxProvider;
+    protected $productionProvider;
 
     protected function setUp()
     {
-        $this->provider = new Clover([
+        $this->sandboxProvider = new Clover([
+            'useSandbox' => true,
+            'clientId' => 'mock_client_id',
+            'clientSecret' => 'mock_secret',
+            'redirectUri' => 'none'
+        ]);
+        $this->productionProvider = new Clover([
+            'useSandbox' => false,
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none'
@@ -28,7 +36,7 @@ class CloverTest extends TestCase
 
     public function testAuthorizationUrl()
     {
-        $url = $this->provider->getAuthorizationUrl();
+        $url = $this->sandboxProvider->getAuthorizationUrl();
         $uri = parse_url($url);
         parse_str($uri['query'], $query);
 
@@ -36,24 +44,43 @@ class CloverTest extends TestCase
         $this->assertArrayHasKey('redirect_uri', $query);
         $this->assertArrayHasKey('state', $query);
         $this->assertArrayHasKey('response_type', $query);
-        $this->assertNotNull($this->provider->getState());
+        $this->assertNotNull($this->sandboxProvider->getState());
+
+        $this->assertEquals('/oauth/v2/authorize', $uri['path']);
+        $this->assertContains('sandbox.dev.clover.com', $uri['host']);
+
+        $prodUri = parse_url($this->productionProvider->getAuthorizationUrl());
+        $this->assertEquals('/oauth/v2/authorize', $prodUri['path']);
+        $this->assertContains('www.clover.com', $prodUri['host']);
     }
 
     public function testBaseAccessTokenUrl()
     {
-        $url = $this->provider->getBaseAccessTokenUrl([]);
+        $url = $this->sandboxProvider->getBaseAccessTokenUrl([]);
         $uri = parse_url($url);
 
         $this->assertEquals('/oauth/v2/token', $uri['path']);
-        $this->assertContains('clover.com', $uri['host']);
-        $this->assertContains('sandbox', $uri['host']);
+        $this->assertContains('sandbox.dev.clover.com', $uri['host']);
+
+        $prodUri = parse_url($this->productionProvider->getAuthorizationUrl());
+        $this->assertEquals('/oauth/v2/token', $prodUri['path']);
+        $this->assertContains('www.clover.com', $prodUri['host']);
+    }
+
+    public function testApiUrl()
+    {
+        $sandboxUri = parse_url($this->sandboxProvider->getApiUrl());
+        $productionUri = parse_url($this->productionProvider->getApiUrl());
+
+        $this->assertContains('sandbox.dev.clover.com', $sandboxUri['host']);
+        $this->assertContains('api.clover.com', $productionUri['host']);
     }
 
     public function testResourceOwnerDetailsUrl()
     {
         $token = new AccessToken(['access_token' => 'fake']);
 
-        $url = $this->provider->getResourceOwnerDetailsUrl($token);
+        $url = $this->sandboxProvider->getResourceOwnerDetailsUrl($token);
 
         $this->assertContains('employees/current', $url);
     }
