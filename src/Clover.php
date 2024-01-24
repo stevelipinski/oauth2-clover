@@ -14,12 +14,12 @@ class Clover extends AbstractProvider
     use BearerAuthorizationTrait;
 
     /*
-    @var bool    
+    @var bool
     */
     protected $sandbox = true;
 
     /*
-    @var string    
+    @var string
     */
     protected $apiUrl;
     protected $authUrl;
@@ -92,14 +92,13 @@ class Clover extends AbstractProvider
 
     protected function checkResponse(ResponseInterface $response, $data)
     {
-        if ($response->getStatusCode() >= 400)
-        {
+        if ($response->getStatusCode() >= 400) {
             $data = (is_array($data)) ? $data : json_decode($data, true);
             throw new IdentityProviderException($data['error'], $response->getStatusCode(), $data);
         }
     }
 
-    // Clover sends access_token_expiration instead of expires. 
+    // Clover sends access_token_expiration instead of expires.
     protected function prepareAccessTokenResponse(array $result)
     {
         if (isset($result['access_token_expiration']) && !isset($result['expires'])) {
