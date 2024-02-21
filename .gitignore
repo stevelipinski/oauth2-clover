@@ -5,3 +5,4 @@ composer.phar
 testing/
 test/log
 build
+.phpunit.result.cache

@@ -12,7 +12,7 @@ class CloverTest extends TestCase
     protected $sandboxProvider;
     protected $productionProvider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->sandboxProvider = new Clover([
             'useSandbox' => true,
@@ -28,7 +28,7 @@ class CloverTest extends TestCase
         ]);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Mockery::close();
         parent::tearDown();
@@ -47,11 +47,11 @@ class CloverTest extends TestCase
         $this->assertNotNull($this->sandboxProvider->getState());
 
         $this->assertEquals('/oauth/v2/authorize', $uri['path']);
-        $this->assertContains('sandbox.dev.clover.com', $uri['host']);
+        $this->assertStringContainsString('sandbox.dev.clover.com', $uri['host']);
 
         $prodUri = parse_url($this->productionProvider->getAuthorizationUrl());
         $this->assertEquals('/oauth/v2/authorize', $prodUri['path']);
-        $this->assertContains('www.clover.com', $prodUri['host']);
+        $this->assertStringContainsString('www.clover.com', $prodUri['host']);
     }
 
     public function testBaseAccessTokenUrl()
@@ -60,11 +60,11 @@ class CloverTest extends TestCase
         $uri = parse_url($url);
 
         $this->assertEquals('/oauth/v2/token', $uri['path']);
-        $this->assertContains('sandbox.dev.clover.com', $uri['host']);
+        $this->assertStringContainsString('sandbox.dev.clover.com', $uri['host']);
 
         $prodUri = parse_url($this->productionProvider->getBaseAccessTokenUrl([]));
         $this->assertEquals('/oauth/v2/token', $prodUri['path']);
-        $this->assertContains('www.clover.com', $prodUri['host']);
+        $this->assertStringContainsString('www.clover.com', $prodUri['host']);
     }
 
     public function testApiUrl()
@@ -72,8 +72,8 @@ class CloverTest extends TestCase
         $sandboxUri = parse_url($this->sandboxProvider->getApiUrl());
         $productionUri = parse_url($this->productionProvider->getApiUrl());
 
-        $this->assertContains('sandbox.dev.clover.com', $sandboxUri['host']);
-        $this->assertContains('api.clover.com', $productionUri['host']);
+        $this->assertStringContainsString('sandbox.dev.clover.com', $sandboxUri['host']);
+        $this->assertStringContainsString('api.clover.com', $productionUri['host']);
     }
 
     public function testResourceOwnerDetailsUrl()
@@ -82,7 +82,7 @@ class CloverTest extends TestCase
 
         $url = $this->sandboxProvider->getResourceOwnerDetailsUrl($token);
 
-        $this->assertContains('employees/current', $url);
+        $this->assertStringContainsString('employees/current', $url);
     }
 
     public function testUserData()
